@@ -61,35 +61,16 @@ $(function() {
 	var url_3 = 'http://localhost:8080/mvn1/webresources/my.mvn1.customer'; 
 	$("#submit_btn2").click(function() {
 		// フォームを取得
-		var form = $("#postcustomer_form");
-		var param = {};
-		// フォームの内容を取得
-		// serializeArrayの戻り値は[{key: 'キーの名前', value: '値'}]という形式になっている
-		$(form.serializeArray()).each(function(i, v) {
-			/*
-			if(v.name === "zip"){
-				param[v.name] = {"zipCode": +'\"'+v.value+'\"'};
-				console.log("zipCode: " +v.value);
-			}else if (v.name === "discountCode"){
-				param[v.name] = {"zipCode1": +'\"'+v.value+'\"'};
-				console.log("discontCode: " +v.value);
-			}
-			else{
-				param[v.name] = v.value;
-			}
-			*/
-			param[v.name] = v.value;
-		});
-//		var json = $.toJSON(param);
-		var json = form.toObject({mode: 'first'});
+		var json = $("#postcustomer_form").toObject({mode: 'first'});
 
-    		//$.post(url_3, JSON.stringify($('#postcustomer_form').jsonify()));
-		console.log("POST customer : " +json);
+    		$.post(url_3, JSON.stringify(json));
+		/*
 		$.post(url_3, JSON.stringify(json), function(data, text_status){
 			console.log("success! " +text_status);
 		}, function(request, text_status, error_thrown){
 			console.log("failed! " +text_status+"\n"+error_thrown);
 		});
+		*/
 		
 
 /* 
@@ -112,10 +93,10 @@ $(function() {
 
 
 		/**
-		 *		$.ajax(options)
-		 *	==  $.get(url, data, callback, "json") //ajax�����b�s���O
-		 *	==  $.getJSON(url, [data], [callback]) //get�����b�s���O
-		 * 	�������A$.ajax�ł����now loading��G���[�n���h�����O�ȂǍׂ������Ƃ��o����
+		 *	$.ajax(options)
+		 *	==  $.get(url, data, callback, "json") //ajaxをラッピング
+		 *	==  $.getJSON(url, [data], [callback]) //getをラッピング
+		 * 	ただし$.ajaxであればnow loadingやエラーハンドリングなど細かいことが出来る
 		 */
 		$.getJSON(url_1+"?callback=?", function(data){
 			showResponse2(data);

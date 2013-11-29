@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Simple JSONP call Example</title>
+	<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="./jquery.jsonify-0.1.js"></script>
+	<script type="text/javascript" src="jquery.json-2.4.min.js"></script>
+</head>
+
+<body>
+
+<div id="contact_form">
+<form action="#">
+  <fieldset>
+    <label for="id" id="id_label">Name</label>
+    <input type="text" name="id" id="id" size="30" value=""  />
+    <input type="button" name="submit_btn" class="button" id="submit_btn" value="Send" />
+  </fieldset>
+</form>
+</div>
+<div id="message"></div>
+<div id="message2"></div>
+
+<div id="postcustomer_form_div">
+<form action="#" id="postcustomer_form">
+	<fieldset>
+		<label for="customerId" id="customerId_id">ID int(11)</label>
+		<input type="text" name="customerId" id="customerId" size="30" value="" /><br>
+		<label for="discountCode" id="discountCode_id">DISCOUNT_CODE char(1)</label>
+		<input type="text" name="discountCode[discountCode]" id="discountCode" size="30" value="N" /><br>
+		<label for="zip" id="zip_id">ZIP vc(10)</label>
+		<input type="text" name="zip[zipCode]" id="zip" size="30" value="10095" /><br>
+		<label for="name" id="name_id">NAME vc(30)</label>
+		<input type="text" name="name" id="name" size="30" value="アホアホマン" /><br>
+		<label for="addressline1" id="addressline1_id">ADDRESSLINE1 vc(30)</label>
+		<input type="text" name="addressline1" id="addressline1" size="30" value="" /><br>
+		<label for="addressline2" id="addressline2_id">ADDRESSLINE2 vc(30)</label>
+		<input type="text" name="addressline2" id="addressline2" size="30" value="" /><br>
+		<label for="city" id="city_id">CITY vc(25)</label>
+		<input type="text" name="city" id="city" size="30" value="" /><br>
+		<label for="state" id="state_id">STATE char(2)</label>
+		<input type="text" name="state" id="state" size="30" value="FL" /><br>
+		<label for="phone" id="phone_id">PHONE char(12)</label>
+		<input type="text" name="phone" id="phone" size="30" value="305-777-4632" /><br>
+		<label for="fax" id="fax_id">FAX char(12)</label>
+		<input type="text" name="fax" id="fax" size="30" value="" /><br>
+		<label for="email" id="email_id">EMAIL vc(40)</label>
+		<input type="text" name="email" id="email" size="30" value="jumbo@jumbo.ru" /><br>
+		<label for="creditLimit" id="creditLimit_id">CREDIT_LIMIT int(11)</label>
+		<input type="text" name="creditLimit" id="creditLimit" size="30" value="" /><br>
+		<input type="button" name="submit_btn2" class="button" id="submit_btn2" value="SEND" /><br>
+	</fieldset>
+</form>
+</div>
+
+
+<script type="text/javascript">
+$(function() {  
+
+	var url_3 = 'http://localhost:8080/mvn1/webresources/my.mvn1.customer'; 
+	$("#submit_btn2").click(function() {
+		// フォームを取得
+		var form = $("#postcustomer_form");
+		var param = {};
+		// フォームの内容を取得
+		// serializeArrayの戻り値は[{key: 'キーの名前', value: '値'}]という形式になっている
+		$(form.serializeArray()).each(function(i, v) {
+			/*
+			if(v.name === "zip"){
+				param[v.name] = {"zipCode": +'\"'+v.value+'\"'};
+				console.log("zipCode: " +v.value);
+			}else if (v.name === "discountCode"){
+				param[v.name] = {"zipCode1": +'\"'+v.value+'\"'};
+				console.log("discontCode: " +v.value);
+			}
+			else{
+				param[v.name] = v.value;
+			}
+			*/
+			param[v.name] = v.value;
+		});
+		var json = $.toJSON(param);
+		var jsonified = $('postcustomer_form').jsonify();
+		console.log("POST customer(jsonify): " +jsonified); 
+    		//$.post(url_3, JSON.stringify($('#postcustomer_form').jsonify()));
+		console.log("POST customer : " +json);
+		/*
+		$.post(url_3, json, function(data, text_status){
+			console.log("success! " +text_status);
+		}, function(request, text_status, error_thrown){
+			console.log("failed! " +text_status+"\n"+error_thrown);
+		});
+		*/
+		
+
+/* 
+ * $.post("http://foobar", {a : foo, b : bar}, function(data, text_status) { 
+ *     // 成功した場合
+ * }, function(request, text_status, error_thrown) {
+ *     // 失敗した場合
+ * });
+ */
+
+
+	});
+
+	$("#submit_btn").click(function() {
+
+		console.log("value " + $("#id").val());//may not work under IE :)
+
+		var url_1 = 'http://localhost:8080/mvn1/webresources/my.mvn1.customer/greeting/' + $("#id").val();
+		var url_2 = 'http://localhost:8080/mvn1/webresources/my.mvn1.customer/greeting/' + $("#id").val();
+
+
+		/**
+		 *		$.ajax(options)
+		 *	==  $.get(url, data, callback, "json") //ajax�����b�s���O
+		 *	==  $.getJSON(url, [data], [callback]) //get�����b�s���O
+		 * 	�������A$.ajax�ł����now loading��G���[�n���h�����O�ȂǍׂ������Ƃ��o����
+		 */
+		$.getJSON(url_1+"?callback=?", function(data){
+			showResponse2(data);
+		});
+/*
+		$.ajax({
+			type: "GET",
+			url: url_1,
+			data: {},
+			async:true,
+			contentType: "application/json; charset=utf-8",
+			dataType: "jsonp",
+			success: function(data) {
+			showResponse(data);
+			},
+			error: function (XMLHttpRequest, textStatus, errorThrown) {
+				alert(XMLHttpRequest +"\n"+textStatus+"\n"+errorThrown);
+			},
+			beforeSend: function (XMLHttpRequest) {
+				$("#message").empty();
+				$("#message").append("<blink>NOW LOADING</blink>");
+						//show loading
+			},
+			complete: function (XMLHttpRequest, textStatus) {
+					//hide loading
+			}
+		});
+*/
+	});
+});
+
+function showResponse (data) {
+	$("#message").empty();
+	$("#message").append('<h4>Response: '+data.addressline1+'</h4>');
+}
+function showResponse2 (data) {
+	$("#message").empty();
+	$("#message2").text(data.addressline1);
+}
+
+
+$.extend({
+/* 
+ * $.post("http://foobar", {a : foo, b : bar}, function(data, text_status) { 
+ *     // 成功した場合
+ * }, function(request, text_status, error_thrown) {
+ *     // 失敗した場合
+ * });
+ */
+	"post" : function (url, data, success, error) {
+		error = error || function() {}; 
+		return $.ajax({
+			url : url,
+			data : data,
+			success : success,
+			contentType: "application/json; charset=utf-8",
+			type : "POST",
+			cache : false,
+			error : error,
+			dataType : "json"
+		});
+	},
+	"del" : function (url, data, success, error) { 
+		error = error || function() {};
+		return $.ajax({
+			"url" : url,
+			"data" : data,
+			"success" : success,
+			"type" : "DELETE",
+			"cache" : false,
+			"error" : error,
+			"dataType" : "json"
+		});
+	}
+});
+
+</script>
+
+</body>
+</html>
